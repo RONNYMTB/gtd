@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commobile Formular</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .column {
+            display: flex;
+            flex-direction: column;
+        }
+        .row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        label {
+            flex: 1;
+        }
+        input, textarea, select {
+            font-size: 1.2em;
+            padding: 10px;
+            width: 100%;
+            flex: 2;
+        }
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        .clear-button {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        function copyFormData() {
+            let form = document.getElementById("commobileForm");
+            let text = "";
+            
+            form.querySelectorAll(".row").forEach(row => {
+                let label = row.querySelector("label");
+                let input = row.querySelector("input, select, textarea");
+                if (label && input) {
+                    let value = (input.tagName === "SELECT") ? input.options[input.selectedIndex].text : input.value;
+                    text += `${label.textContent.trim()} ${value}\n`;
+                }
+            });
+            
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textArea);
+            
+            alert("Formulardaten wurden in die Zwischenablage kopiert!");
+        }
+        
+        function clearForm(event) {
+            if (event.detail === 2) { // Prüft auf Doppelklick
+                let form = document.getElementById("commobileForm");
+                form.reset();
+            }
+        }
+    </script>
+</head>
+<body>
+    <h2>Commobile Formular</h2>
+    <form id="commobileForm">
+        <div class="container">
+            <div class="column">
+                <div class="row"><label>Hersteller:</label> <input type="text" name="hersteller"></div>
+                <div class="row"><label>Model:</label> <input type="text" name="model"></div>
+                <div class="row"><label>Seriennummer:</label> <input type="text" name="seriennummer"></div>
+                <div class="row"><label>Standort:</label> 
+                    <select name="standort">
+                        <option value="küche">Küche</option>
+                        <option value="keller">Keller</option>
+                        <option value="bar">Bar</option>
+                        <option value="buffet">Buffet</option>
+                    </select>
+                </div>
+                <div class="row"><label>Fehler / Auftrag:</label> <textarea name="fehler"></textarea></div>
+                <div class="row"><label>Ausgeführte Arbeiten:</label> <textarea name="arbeiten" style="height: 25em; font-size: 1.2em; padding: 10px; width: 100%;" oninput="this.value = this.value.trimStart()"></textarea></div>
+            </div>
+            <div class="column">
+                <div class="row"><label>Garantie:</label> 
+                    <select name="garantie">
+                        <option value="nein">Nein</option>
+                        <option value="ja">Ja</option>
+                    </select>
+                </div>
+                <div class="row"><label>Anfahrt:</label> 
+                    <select name="anfahrt">
+                        <option value="pauschal">Pauschal</option>
+                        <option value="nach_aufwand">Nach Aufwand</option>
+                    </select>
+                </div>
+                <div class="row"><label>Rüstkosten:</label> 
+                    <select name="ruestkosten">
+                        <option value="ja">Ja</option>
+                        <option value="nein">Nein</option>
+                    </select>
+                </div>
+                <div class="row"><label>Arbeiten beendet:</label> 
+                    <select name="beendet">
+                        <option value="ja">Ja</option>
+                        <option value="nein">Nein</option>
+                    </select>
+                </div>
+                <div class="row"><label>Folgeauftrag:</label> 
+                    <select name="folgeauftrag">
+                        <option value="nein">Nein</option>
+                        <option value="ja">Ja</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="button-container">
+            <button type="button" class="clear-button" ondblclick="clearForm(event)">FORMULAR LEEREN</button>
+            <button type="button" onclick="copyFormData()" style="margin-left: 10px;">FORMULAR KOPIEREN</button>
+        </div>
+    </form>
+</body>
+</html>
